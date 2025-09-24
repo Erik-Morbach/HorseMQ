@@ -5,11 +5,8 @@ import network.InputUtils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.Socket;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.random.RandomGenerator;
 
 public class Create extends Operation {
     public static final byte TYPE_BYTE = 0b00100000;
@@ -31,16 +28,20 @@ public class Create extends Operation {
 
     public void createProducer() throws IOException {
         String producerName = InputUtils.readString(is).toString();
-        System.out.println("Creating producer: " + producerName);
         Random rand = new Random();
-        os.write(rand.nextInt());
+        StringBuilder producerId = new StringBuilder();
+        for(int i=0;i<4;i++) producerId.append((char) rand.nextInt('a', 'z'));
+        os.write(producerId.toString().getBytes());
+        System.out.println("Creating producer: " + producerName + " with id: " +producerId);
     }
 
     public void createConsumer() throws IOException {
         String consumerName = InputUtils.readString(is).toString();
-        System.out.println("Creating consumer: " + consumerName);
         Random rand = new Random();
-        os.write(rand.nextInt());
+        StringBuilder consumerId = new StringBuilder();
+        for(int i=0;i<4;i++) consumerId.append((char) rand.nextInt('a', 'z'));
+        os.write(consumerId.toString().getBytes());
+        System.out.println("Created consumer: " + consumerName + " with id: " + consumerId);
     }
     public void createQueue() throws IOException {
         List<String> allowedConsumers = List.of(InputUtils.readString(this.is).toString().split(";"));

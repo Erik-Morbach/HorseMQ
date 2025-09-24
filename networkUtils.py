@@ -12,7 +12,7 @@ def createProducerId(producerName):
     data += producerName.encode('utf-8')
     data += b"\0"
     s.send(data)
-    producerId = s.recv(4)
+    producerId = s.recv(5)
     s.close()
     return producerName, producerId
 
@@ -25,7 +25,7 @@ def createConsumerId(consumerName):
     data += consumerName.encode('utf-8')
     data += b"\0"
     s.send(data)
-    consumerId = s.recv(4)
+    consumerId = s.recv(5)
     s.close()
     return consumerName, consumerId
 
@@ -38,6 +38,36 @@ def createQueueId(allowedConsumers):
     data += (";".join(allowedConsumers)).encode('utf-8')
     data += b"\0"
     s.send(data)
-    queueId = s.recv(4)
+    queueId = s.recv(5)
     s.close()
     return queueId
+
+
+def connectConsumerToQueue(consumerId, queueId):
+    s = socket.socket()
+    s.connect((str(SERVER_HOSTNAME), SERVER_PORT))
+    data = bytearray()
+    data.append(0b01100000)
+    data += consumerId.encode("utf-8")
+    data += b"\0"
+    data += queueId.encode("utf-8")
+    data += b"\0"
+    s.send(data)
+    response = s.recv(1)
+    s.close()
+    print(response)
+
+
+def disconnectConsumerToQueue(consumerId, queueId):
+    s = socket.socket()
+    s.connect((str(SERVER_HOSTNAME), SERVER_PORT))
+    data = bytearray()
+    data.append(0b01000000)
+    data += consumerId.encode("utf-8")
+    data += b"\0"
+    data += queueId.encode("utf-8")
+    data += b"\0"
+    s.send(data)
+    response = s.recv(1)
+    s.close()
+    print(response)
