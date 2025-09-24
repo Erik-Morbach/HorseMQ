@@ -8,7 +8,7 @@ import java.io.OutputStream;
 import java.util.Random;
 
 public class ConsumerRegistration extends Operation {
-    public static final byte CONNECT_BYTE = 0b0100000;
+    public static final byte CONNECT_BYTE = 0b010000;
     public ConsumerRegistration(InputStream is, OutputStream os) {
         super(is, os);
     }

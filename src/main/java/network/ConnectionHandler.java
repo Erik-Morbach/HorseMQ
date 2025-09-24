@@ -32,7 +32,7 @@ public class ConnectionHandler implements Runnable {
         try(BufferedInputStream is = new BufferedInputStream(socket.getInputStream());
                 BufferedOutputStream os = new BufferedOutputStream(socket.getOutputStream())) {
             byte header = is.readNBytes(1)[0];
-            byte operation = (byte) (header >> 6);
+            byte operation = (byte) (header >> 5);
             if(operation > 3) return;
             operations.get(operation)
                     .apply(is, os)

@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.Random;
 
 public class Create extends Operation {
-    public static final byte TYPE_BYTE = 0b00100000;
-    public static final byte USER_BYTE = 0b00010000;
+    public static final byte TYPE_BYTE = 0b0010000;
+    public static final byte USER_BYTE = 0b0001000;
     public Create(InputStream is, OutputStream os) {
         super(is, os);
     }
