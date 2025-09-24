@@ -17,6 +17,19 @@ def createProducerId(producerName):
     return producerName, producerId
 
 
+def createConsumerId(consumerName):
+    s = socket.socket()
+    s.connect((str(SERVER_HOSTNAME), SERVER_PORT))
+    data = bytearray()
+    data.append(0b00000000)
+    data += consumerName.encode('utf-8')
+    data += b"\0"
+    s.send(data)
+    consumerId = s.recv(4)
+    s.close()
+    return consumerName, consumerId
+
+
 def createQueueId(allowedConsumers):
     s = socket.socket()
     s.connect((str(SERVER_HOSTNAME), SERVER_PORT))
