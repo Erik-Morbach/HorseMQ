@@ -1,10 +1,12 @@
 package network.operations;
 
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.Socket;
 
 public class ProducerSend extends Operation {
-    public ProducerSend(Socket socket) {
-        super(socket);
+    public ProducerSend(InputStream is, OutputStream os) {
+        super(is, os);
     }
 
     @Override

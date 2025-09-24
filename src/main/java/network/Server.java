@@ -9,7 +9,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 public class Server {
     private ServerSocket serverSocket;
     private ThreadPoolExecutor threadPoolExecutor;
-    public void setup() throws IOException {
+    public Server() throws IOException {
         this.serverSocket = new ServerSocket(80);
         this.threadPoolExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
     }
