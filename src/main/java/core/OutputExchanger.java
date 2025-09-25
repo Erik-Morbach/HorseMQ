@@ -1,5 +1,6 @@
 package core;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,9 +26,9 @@ public class OutputExchanger {
         return secQueueManager != null;
     }
 
-    public List<Double> sendMessage(int maxMessages, String consumerId) {
-        SecondaryQueueManager secQueueManager = secondaryQueueManagerMap.get(consumerId);
-        if(secQueueManager == null) throw new RuntimeException("consumer does not have a queue");
+    public List<Double> sendMessage(int maxMessages, String consumerId, String queueId) {
+        SecondaryQueueManager secQueueManager = secondaryQueueManagerMap.get(consumerId + queueId);
+        if(secQueueManager == null) return new ArrayList<>();
         return secQueueManager.dispatchToConsumer(maxMessages);
     }
 }

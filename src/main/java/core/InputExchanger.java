@@ -12,7 +12,7 @@ public class InputExchanger {
         return queueManager.createQueue(queueId, producerId, consumersIds);
     }
 
-    public void receiveMessage(String queueId, String producerId, Double msg) {
+    public void receiveMessage(String queueId, String producerId, DoubleMessage msg) {
         queueManager.handleMessage(queueId, producerId, msg);
     }
 

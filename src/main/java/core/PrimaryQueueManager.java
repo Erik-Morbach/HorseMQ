@@ -12,7 +12,7 @@ public class PrimaryQueueManager extends QueueManager {
     }
 
     @Override
-    public boolean handleMessage(String queueId, String producerId, Double msg) {
+    public boolean handleMessage(String queueId, String producerId, DoubleMessage msg) {
         Queue queue = queues.get(queueId);
 
         if (queue == null) return false;

@@ -9,18 +9,18 @@ import java.util.Set;
 public class Queue {
     private String producer;
     private Set<String> consumers;
-    private LinkedList<Double> messages = new LinkedList<>();
+    private LinkedList<DoubleMessage> messages = new LinkedList<>();
 
     public Queue(String producer, Set<String> consumers){
         this.producer = producer;
         this.consumers = consumers;
     }
 
-    public void enqueue(Double msg) {
+    public void enqueue(DoubleMessage msg) {
         messages.addLast(msg);
     }
 
-    public Double dequeue() {
+    public DoubleMessage dequeue() {
         return messages.isEmpty() ? null : messages.removeFirst();
     }
 
@@ -32,7 +32,7 @@ public class Queue {
         return messages.size();
     }
 
-    public Iterator<Double> iterator() {
+    public Iterator<DoubleMessage> iterator() {
         return messages.iterator();
     }
 
