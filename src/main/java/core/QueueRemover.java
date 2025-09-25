@@ -7,7 +7,7 @@ public class QueueRemover implements Runnable{
     private List<Queue> queues;
 
     public QueueRemover(List<Queue> queue){
-        this.queues = queues;
+        this.queues = queue;
     }
 
     public void run() {
