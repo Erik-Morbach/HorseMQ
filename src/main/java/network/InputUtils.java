@@ -24,9 +24,7 @@ public class InputUtils {
 
     public static double readDouble(InputStream is) throws IOException {
         ByteBuffer buffer = ByteBuffer.allocate(8);
-        for(int i = 0; i < 8; i++){
-            buffer = buffer.put((byte)is.read());
-        }
+        buffer.put(is.readNBytes(8));
         return buffer.getDouble(0);
     }
 }

@@ -7,9 +7,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 
 public class ProducerSend extends Operation {
-    private double[] buffer = new double[1024];
+    private ByteBuffer buffer = ByteBuffer.allocate(1024*8);
+    private long lastSendTime = System.currentTimeMillis();
     public ProducerSend(InputStream is, OutputStream os) {
         super(is, os);
     }
@@ -25,14 +28,18 @@ public class ProducerSend extends Operation {
         os.write(0b1);
         os.flush();
 
+        buffer.order(ByteOrder.BIG_ENDIAN);
         int blockSize = 0;
+        long maxDiff = 0;
         while((blockSize = InputUtils.readInt(is)) > 0) {
+            long currentTime = System.currentTimeMillis();
+            maxDiff = Math.max(currentTime - lastSendTime, maxDiff);
+            System.out.printf("diff %d       \r",maxDiff);
+            lastSendTime = currentTime;
             for(int i=0;i<blockSize;i++) {
-                buffer[i] = InputUtils.readDouble(is);
+                buffer.putDouble(i*8, InputUtils.readDouble(is));
             }
-            System.out.println("Read block with "+blockSize +" values");
         }
         System.out.println("Ending connection");
-
     }
 }

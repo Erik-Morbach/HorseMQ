@@ -49,7 +49,6 @@ public class Create extends Operation {
         System.out.println("Creating queue for consumers: " + allowedConsumers.stream().reduce("", (a, b) -> a +","+ b));
         String queueName = "TesQ";
         os.write(queueName.getBytes());
-        os.write('\0');
     }
 
 }

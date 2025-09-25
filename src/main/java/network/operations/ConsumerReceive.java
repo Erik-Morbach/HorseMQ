@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.nio.IntBuffer;
 import java.util.Random;
 
@@ -30,28 +31,24 @@ public class ConsumerReceive extends Operation {
 
         Random rand = new Random();
 
-        int currentSize = rand.nextInt(10,100);
-        for(int i=0;i<currentSize;i++){
-            buffer.putDouble(i, rand.nextDouble());
-        }
-
         int blockSize = 0;
-        int beginIndex = 0;
         ByteBuffer intBuffer = ByteBuffer.allocate(4);
+        intBuffer.order(ByteOrder.BIG_ENDIAN);
+        buffer.order(ByteOrder.BIG_ENDIAN);
+        int index = 0;
         while((blockSize = InputUtils.readInt(is)) > 0) {
-            System.out.println("Desired "+ blockSize);
-            int size = Math.max(0, Math.min(currentSize - beginIndex, blockSize));
+            int size = blockSize;
             intBuffer.putInt(0, size);
-            System.out.println("Sending " + size + " bytes");
-            os.write(intBuffer.array());
+            os.write(intBuffer.array(),0, 4);
             os.flush();
 
-            if(size == 0) break;
+            if(size == 0) continue;
 
-            os.write(buffer.array(), beginIndex, size*8);
+            for(int i=0;i<size;i++){
+                buffer.putDouble(i*8, Math.sin(2*Math.PI*2*(index++)/44100));
+            }
+            os.write(buffer.array(), 0, size*8);
             os.flush();
-            beginIndex += size;
-            System.out.println("Read block with "+blockSize +" values");
         }
         os.write(0b11111111);
         os.flush();

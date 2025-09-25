@@ -75,7 +75,7 @@ def disconnectConsumerToQueue(consumerId, queueId):
     print(response)
 
 
-def producerSendData(producerId, queueId, audioData):
+def producerBeginSendData(producerId, queueId):
     s = socket.socket()
     s.connect((str(SERVER_HOSTNAME), SERVER_PORT))
     data = struct.pack("B", 0b1000000)
@@ -88,7 +88,11 @@ def producerSendData(producerId, queueId, audioData):
     if response == 0:
         s.close()
         return
+    return s
 
+
+def producerSendData(producerId, queueId, audioData):
+    s = producerBeginSendData(producerId, queueId)
     totalSize = len(audioData)
 
     print("Sending data as producer ", producerId, " to queue ", queueId)
@@ -104,7 +108,7 @@ def producerSendData(producerId, queueId, audioData):
         totalSize -= blockSize
 
 
-def consumerReceiveData(consumerId, queueId):
+def consumerBeginReceivingData(consumerId, queueId):
     s = socket.socket()
     s.connect((str(SERVER_HOSTNAME), SERVER_PORT))
     data = struct.pack("B", 0b1100000)
@@ -116,7 +120,12 @@ def consumerReceiveData(consumerId, queueId):
     response = s.recv(1)
     if response == 0:
         s.close()
-        return
+        return None
+    return s
+
+
+def consumerReceiveData(consumerId, queueId):
+    s = consumerBeginReceivingData(consumerId, queueId)
     print("Receiving data as a consumer ", consumerId, " at queue ", queueId)
 
     while 1:
