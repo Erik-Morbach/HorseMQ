@@ -21,7 +21,7 @@ consumerList = argv[4:]
 if nu.createProducerId(producerName):
     print(f"Producer {producerName} created")
 
-if nu.createQueueId(queueName,  consumerList):
+if nu.createQueueId(producerName, queueName,  consumerList):
     print(f"Queue {queueName} created for consumers {consumerList}")
 
 print(f"producer = {producerName}")

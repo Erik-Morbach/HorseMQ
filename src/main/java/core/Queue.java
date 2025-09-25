@@ -1,22 +1,17 @@
 package core;
 
-import java.nio.Buffer;
 import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Set;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.LinkedBlockingDeque;
 
 public class Queue {
     private String producer;
     private Set<String> consumers;
-    private LinkedList<DoubleMessage> messages = new LinkedList<>();
-
+    private LinkedBlockingDeque<DoubleMessage> messages = new LinkedBlockingDeque<>();
 
     public Queue(String producer, Set<String> consumers){
         this.producer = producer;
-        this.consumers = consumers;;
+        this.consumers = consumers;
     }
 
     public void enqueue(DoubleMessage msg) {
@@ -24,7 +19,7 @@ public class Queue {
     }
 
     public DoubleMessage dequeue() {
-        return messages.isEmpty() ? null : messages.removeFirst();
+        return messages.isEmpty() ? null : messages.pollFirst();
     }
 
     public boolean isEmpty() {
@@ -50,8 +45,5 @@ public class Queue {
     public Set<String> getConsumers(){
         return this.consumers;
     }
-
-    public List<DoubleMessage> getMessages(){
-        return this.messages;
-    }
+    public LinkedBlockingDeque<DoubleMessage> getMessages(){ return this.messages; }
 }

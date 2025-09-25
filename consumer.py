@@ -12,14 +12,16 @@ from sys import argv
 matplotlib.use('macosx')
 
 consumerName = argv[1]
-queueId = argv[2]
+queueName = argv[2]
 
-consumerId = nu.createConsumerId(consumerName)[1].decode("utf-8")
+if nu.createConsumerId(consumerName):
+    print(f"Consumer {consumerName} created")
 
-nu.connectConsumerToQueue(consumerId, queueId)
+if nu.connectConsumerToQueue(consumerName, queueName):
+    print(f"Consumer {consumerName} connected to queue {queueName}")
 
 
-s = nu.consumerBeginReceivingData(consumerId, queueId)
+s = nu.consumerBeginReceivingData(consumerName, queueName)
 
 que = Queue()
 

@@ -14,9 +14,9 @@ def createProducerId(producerName):
     data += producerName.encode('utf-8')
     data += b"\0"
     s.send(data)
-    producerId = s.recv(5)
+    value = s.recv(1)
     s.close()
-    return producerName, producerId
+    return value
 
 
 def createConsumerId(consumerName):
@@ -27,16 +27,18 @@ def createConsumerId(consumerName):
     data += consumerName.encode('utf-8')
     data += b"\0"
     s.send(data)
-    consumerId = s.recv(5)
+    value = s.recv(1)
     s.close()
-    return consumerName, consumerId
+    return value
 
 
-def createQueueId(queueName, allowedConsumers):
+def createQueueId(producerName, queueName, allowedConsumers):
     s = socket.socket()
     s.connect((str(SERVER_HOSTNAME), SERVER_PORT))
     data = bytearray()
     data.append(0b0010000)
+    data += producerName.encode("utf-8")
+    data += b"\0"
     data += queueName.encode("utf-8")
     data += b"\0"
     data += (";".join(allowedConsumers)).encode('utf-8')
@@ -141,5 +143,6 @@ def consumerReceiveData(consumerId, queueId):
             break
         audioData = s.recv(size*8)
         audioData = struct.unpack(f">{size}d", audioData)
-        print(f"Received {size} doubles: {",".join([str(a) for a in audioData])}")
+        print(f"Received {size} doubles: {
+              ",".join([str(a) for a in audioData])}")
     print("End receiving")
