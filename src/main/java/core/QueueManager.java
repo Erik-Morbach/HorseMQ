@@ -1,4 +1,5 @@
 package core;
 
-public class QueueManager {
+public abstract class QueueManager {
+    public abstract boolean handleMessage(String queueId, String producerId, Double msg);
 }
