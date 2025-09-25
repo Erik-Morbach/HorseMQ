@@ -1,5 +1,7 @@
 package network.operations;
 
+import core.InputExchanger;
+import core.OutputExchanger;
 import network.InputUtils;
 
 import java.io.IOException;
@@ -9,8 +11,9 @@ import java.util.Random;
 
 public class ConsumerRegistration extends Operation {
     public static final byte CONNECT_BYTE = 0b010000;
-    public ConsumerRegistration(InputStream is, OutputStream os) {
-        super(is, os);
+
+    public ConsumerRegistration(InputStream is, OutputStream os, InputExchanger inputExchanger, OutputExchanger outputExchanger) {
+        super(is, os, inputExchanger, outputExchanger);
     }
 
     @Override

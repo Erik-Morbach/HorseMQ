@@ -1,5 +1,7 @@
 package network.operations;
 
+import core.InputExchanger;
+import core.OutputExchanger;
 import network.InputUtils;
 
 import javax.xml.transform.Source;
@@ -13,8 +15,9 @@ import java.nio.ByteOrder;
 public class ProducerSend extends Operation {
     private ByteBuffer buffer = ByteBuffer.allocate(1024*8);
     private long lastSendTime = System.currentTimeMillis();
-    public ProducerSend(InputStream is, OutputStream os) {
-        super(is, os);
+
+    public ProducerSend(InputStream is, OutputStream os, InputExchanger inputExchanger, OutputExchanger outputExchanger) {
+        super(is, os, inputExchanger, outputExchanger);
     }
 
     @Override

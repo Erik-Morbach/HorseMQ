@@ -23,10 +23,10 @@ public class ConnectionHandler implements Runnable {
     private InputExchanger inputExchanger;
     private OutputExchanger outputExchanger;
     private final List<BiFunction<InputStream, OutputStream, Operation>> operations = List.of(
-            Create::new,
-            ConsumerRegistration::new,
-            ProducerSend::new,
-            ConsumerReceive::new
+            (is, os) -> new Create(is,os,inputExchanger, outputExchanger),
+            (is, os) -> new ConsumerRegistration(is,os,inputExchanger, outputExchanger),
+            (is, os) -> new ProducerSend(is,os,inputExchanger, outputExchanger),
+            (is, os) -> new ConsumerReceive(is,os,inputExchanger, outputExchanger)
     );
     public ConnectionHandler(Socket socket, InputExchanger inputExchanger, OutputExchanger outputExchanger) throws IOException {
         this.socket = socket;
@@ -42,7 +42,7 @@ public class ConnectionHandler implements Runnable {
             if(operation > 3) return;
             operations.get(operation)
                     .apply(is, os)
-                    .handle(header, inputExchanger, outputExchanger);
+                    .handle(header);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

@@ -28,7 +28,7 @@ public class Server {
 
         while (true) {
             Socket socket = this.serverSocket.accept();
-            threadPoolExecutor.execute(new ConnectionHandler(socket));
+            threadPoolExecutor.execute(new ConnectionHandler(socket, inputExchanger, outputExchanger));
         }
     }
 }

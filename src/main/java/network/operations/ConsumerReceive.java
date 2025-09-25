@@ -1,5 +1,7 @@
 package network.operations;
 
+import core.InputExchanger;
+import core.OutputExchanger;
 import network.InputUtils;
 
 import java.io.IOException;
@@ -14,8 +16,9 @@ import java.util.Random;
 public class ConsumerReceive extends Operation {
     private ByteBuffer buffer = ByteBuffer.allocate(1024*8);
     private int bufferSeparation = 1024*8 - 100;
-    public ConsumerReceive(InputStream is, OutputStream os) {
-        super(is, os);
+
+    public ConsumerReceive(InputStream is, OutputStream os, InputExchanger inputExchanger, OutputExchanger outputExchanger) {
+        super(is, os, inputExchanger, outputExchanger);
     }
 
     @Override

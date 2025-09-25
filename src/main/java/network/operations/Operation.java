@@ -11,10 +11,14 @@ import java.net.Socket;
 public abstract class Operation {
     protected InputStream is;
     protected OutputStream os;
-    public Operation(InputStream is, OutputStream os) {
+    protected InputExchanger inputExchanger;
+    protected OutputExchanger outputExchanger;
+    public Operation(InputStream is, OutputStream os, InputExchanger inputExchanger, OutputExchanger outputExchanger) {
         this.is = is;
         this.os = os;
+        this.inputExchanger = inputExchanger;
+        this.outputExchanger = outputExchanger;
     }
-    public abstract void handle(byte headerByte, InputExchanger inputExchanger, OutputExchanger outputExchanger) throws IOException;
+    public abstract void handle(byte headerByte) throws IOException;
 
 }
