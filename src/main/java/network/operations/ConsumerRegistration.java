@@ -26,20 +26,14 @@ public class ConsumerRegistration extends Operation {
         String queueId = InputUtils.readString(is).toString();
 
         System.out.println("Trying to connect consumer " + consumerId + " to queue " + queueId);
-        Random r = new Random();
-        if(r.nextBoolean()){
-            System.out.println("Connected successfully");
-            os.write(0b1);
-        }
-        else {
-            System.out.println("Not possible to connect");
-            os.write(0b0);
-        }
+        boolean value = outputExchanger.firstQueueConnection(consumerId, queueId);
+        os.write(value? 1: 0);
+        System.out.println(value?"Connected successfully":"Not able to connect");
     }
     public void unsubscribeConsumer() throws IOException {
         String consumerId = InputUtils.readString(is).toString();
         String queueId = InputUtils.readString(is).toString();
         System.out.println("Unsubscribing consumer " + consumerId + " to queue " + queueId);
-        os.write(0b1);
+        os.write(outputExchanger.disconnectFromQueue(consumerId, queueId)?1:0);
     }
 }

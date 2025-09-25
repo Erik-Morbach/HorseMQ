@@ -5,6 +5,7 @@ import java.util.*;
 public class PrimaryQueueManager extends QueueManager {
     private final Map<String, Queue> queues = new HashMap<>();
     private final Set<String> consumers = new HashSet<>();
+    private final Set<String> producers = new HashSet<>();
 
     public boolean createQueue(String queueId, String producerId, Set<String> consumerIds){
         Queue queue = queues.putIfAbsent(queueId, new Queue(producerId, consumerIds));
@@ -34,6 +35,9 @@ public class PrimaryQueueManager extends QueueManager {
 
     public boolean addConsumerToBroker(String consumerId){
         return consumers.add(consumerId);
+    }
+    public boolean addProducerToBroker(String producerId){
+        return producers.add(producerId);
     }
 
     public Queue findQueueByQueueId(String queueId){

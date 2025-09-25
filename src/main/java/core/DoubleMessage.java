@@ -7,8 +7,8 @@ import java.util.Arrays;
 import java.util.List;
 
 public class DoubleMessage {
-    List<Double> values;
-    int accesses;
+    public List<Double> values;
+    public int accesses;
 
     public static DoubleMessage from(ByteBuffer buffer) {
         DoubleMessage response = new DoubleMessage();

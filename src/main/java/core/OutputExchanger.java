@@ -14,6 +14,9 @@ public class OutputExchanger {
         this.secondaryQueueManagerMap = new HashMap<>();
     }
 
+    public boolean disconnectFromQueue(String consumerId, String queueId) {
+        return secondaryQueueManagerMap.remove(consumerId + queueId) != null;
+    }
     public boolean firstQueueConnection(String consumerId, String queueId){
         var mainQueue = primaryQueueManager.findQueueByQueueId(queueId);
 

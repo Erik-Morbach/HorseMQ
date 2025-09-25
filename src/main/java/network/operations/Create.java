@@ -31,27 +31,24 @@ public class Create extends Operation {
 
     public void createProducer() throws IOException {
         String producerName = InputUtils.readString(is).toString();
-        Random rand = new Random();
-        StringBuilder producerId = new StringBuilder();
-        for(int i=0;i<4;i++) producerId.append((char) rand.nextInt('a', 'z'));
-        os.write(producerId.toString().getBytes());
-        System.out.println("Creating producer: " + producerName + " with id: " +producerId);
+        System.out.println("Creating producer: " + producerName);
+        os.write(inputExchanger.registerProducer(producerName)?1:0);
+        os.flush();
     }
 
     public void createConsumer() throws IOException {
         String consumerName = InputUtils.readString(is).toString();
-        Random rand = new Random();
-        StringBuilder consumerId = new StringBuilder();
-        for(int i=0;i<4;i++) consumerId.append((char) rand.nextInt('a', 'z'));
-        os.write(consumerId.toString().getBytes());
-        System.out.println("Created consumer: " + consumerName + " with id: " + consumerId);
+        System.out.println("Created consumer: " + consumerName);
+        os.write(inputExchanger.registerConsumer(consumerName)?1:0);
+        os.flush();
     }
     public void createQueue() throws IOException {
+        String producerId = InputUtils.readString(is).toString();
+        String queueId = InputUtils.readString(is).toString();
         List<String> allowedConsumers = List.of(InputUtils.readString(this.is).toString().split(";"));
-        int c;
-        System.out.println("Creating queue for consumers: " + allowedConsumers.stream().reduce("", (a, b) -> a +","+ b));
-        String queueName = "TesQ";
-        os.write(queueName.getBytes());
+        System.out.println("Creating queue " + queueId + " for consumers: " + allowedConsumers.stream().reduce("", (a, b) -> a +","+ b));
+        os.write(inputExchanger.registerQueue(queueId, producerId, allowedConsumers)?1:0);
+        os.flush();
     }
 
 }

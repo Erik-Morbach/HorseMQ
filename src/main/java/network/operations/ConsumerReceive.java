@@ -1,5 +1,6 @@
 package network.operations;
 
+import core.DoubleMessage;
 import core.InputExchanger;
 import core.OutputExchanger;
 import network.InputUtils;
@@ -11,6 +12,7 @@ import java.net.Socket;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.IntBuffer;
+import java.util.List;
 import java.util.Random;
 
 public class ConsumerReceive extends Operation {
@@ -18,7 +20,6 @@ public class ConsumerReceive extends Operation {
     private final double messageDuration = 0.1;
     private final double sampleRate = 44100.0;
     private final int bufferSize = (int)(messageDuration * sampleRate * 8);
-    private int bufferSeparation = 1024*8 - 100;
 
     public ConsumerReceive(InputStream is, OutputStream os, InputExchanger inputExchanger, OutputExchanger outputExchanger) {
         super(is, os, inputExchanger, outputExchanger);
@@ -51,13 +52,36 @@ public class ConsumerReceive extends Operation {
             if(size == 0) continue;
 
             for(int i=0;i<size;i++){
-                buffer.putDouble(i*8, Math.sin(2*Math.PI*2*(index++)/44100));
+                DoubleMessage message = new DoubleMessage();
+                buffer.position(0);
+                for(int j=0;j<bufferSize;j++) {
+                    buffer.putDouble(j * 8, message.values.get(j));
+                }
+                os.write(buffer.array(), 0, size*8);
+                os.flush();
             }
+        }
+        while (true) {
+            int maxMessages = InputUtils.readInt(is);
+            List<DoubleMessage> batch = outputExchanger.sendMessage(maxMessages, consumerId, queueId);
+            int size = batch.stream().mapToInt(m -> m.values.size()).sum();
+
+            intBuffer.putInt(0, size);
+            os.write(intBuffer.array(), 0, 4);
+            os.flush();
+
+            if (size == 0) continue;
+
+            int offset = 0;
+            for (DoubleMessage msg : batch) {
+                for (double d : msg.values) {
+                    buffer.putDouble(offset, d);
+                    offset += 8;
+                }
+            }
+
             os.write(buffer.array(), 0, size*8);
             os.flush();
         }
-        os.write(0b11111111);
-        os.flush();
-        System.out.println("Ending connection");
     }
 }

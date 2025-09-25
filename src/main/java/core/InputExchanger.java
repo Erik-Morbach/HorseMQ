@@ -1,9 +1,11 @@
 package core;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class InputExchanger {
     PrimaryQueueManager queueManager;
@@ -12,8 +14,8 @@ public class InputExchanger {
         this.queueManager = primaryQueueManager;
     }
 
-    public boolean registerQueue(String queueId, String producerId, Set<String> consumersIds) {
-        return queueManager.createQueue(queueId, producerId, consumersIds);
+    public boolean registerQueue(String queueId, String producerId, List<String> consumersIds) {
+        return queueManager.createQueue(queueId, producerId, new HashSet<>(consumersIds));
     }
 
     public void receiveMessage(String queueId, String producerId, DoubleMessage msg) {
@@ -26,5 +28,9 @@ public class InputExchanger {
 
     public boolean registerConsumer(String consumerId){
         return queueManager.addConsumerToBroker(consumerId);
+    }
+
+    public boolean registerProducer(String producerId){
+        return queueManager.addProducerToBroker(producerId);
     }
 }
