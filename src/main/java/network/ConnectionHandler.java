@@ -1,5 +1,7 @@
 package network;
 
+import core.InputExchanger;
+import core.OutputExchanger;
 import network.operations.ConsumerReceive;
 import network.operations.ConsumerRegistration;
 import network.operations.Create;
@@ -18,14 +20,18 @@ import java.util.function.Function;
 
 public class ConnectionHandler implements Runnable {
     private Socket socket;
+    private InputExchanger inputExchanger;
+    private OutputExchanger outputExchanger;
     private final List<BiFunction<InputStream, OutputStream, Operation>> operations = List.of(
             Create::new,
             ConsumerRegistration::new,
             ProducerSend::new,
             ConsumerReceive::new
     );
-    public ConnectionHandler(Socket socket) throws IOException {
+    public ConnectionHandler(Socket socket, InputExchanger inputExchanger, OutputExchanger outputExchanger) throws IOException {
         this.socket = socket;
+        this.inputExchanger = inputExchanger;
+        this.outputExchanger = outputExchanger;
     }
     @Override
     public void run() {
@@ -36,7 +42,7 @@ public class ConnectionHandler implements Runnable {
             if(operation > 3) return;
             operations.get(operation)
                     .apply(is, os)
-                    .handle(header);
+                    .handle(header, inputExchanger, outputExchanger);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

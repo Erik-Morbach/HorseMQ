@@ -9,7 +9,7 @@ public class OutputExchanger {
     private final PrimaryQueueManager primaryQueueManager;
     private final Map<String, SecondaryQueueManager> secondaryQueueManagerMap;
 
-    public OutputExchanger(SecondaryQueueManager secondaryQueueManager, PrimaryQueueManager primaryQueueManager, Map<String, SecondaryQueueManager> secondaryQueueManagerMap) {
+    public OutputExchanger(PrimaryQueueManager primaryQueueManager) {
         this.primaryQueueManager = primaryQueueManager;
         this.secondaryQueueManagerMap = new HashMap<>();
     }
@@ -26,7 +26,7 @@ public class OutputExchanger {
         return secQueueManager != null;
     }
 
-    public List<Double> sendMessage(int maxMessages, String consumerId, String queueId) {
+    public List<DoubleMessage> sendMessage(int maxMessages, String consumerId, String queueId) {
         SecondaryQueueManager secQueueManager = secondaryQueueManagerMap.get(consumerId + queueId);
         if(secQueueManager == null) return new ArrayList<>();
         return secQueueManager.dispatchToConsumer(maxMessages);

@@ -1,5 +1,8 @@
 package network.operations;
 
+import core.InputExchanger;
+import core.OutputExchanger;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -12,6 +15,6 @@ public abstract class Operation {
         this.is = is;
         this.os = os;
     }
-    public abstract void handle(byte headerByte) throws IOException;
+    public abstract void handle(byte headerByte, InputExchanger inputExchanger, OutputExchanger outputExchanger) throws IOException;
 
 }

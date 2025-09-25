@@ -8,6 +8,10 @@ import java.util.Set;
 public class InputExchanger {
     PrimaryQueueManager queueManager;
 
+    public InputExchanger(PrimaryQueueManager primaryQueueManager){
+        this.queueManager = primaryQueueManager;
+    }
+
     public boolean registerQueue(String queueId, String producerId, Set<String> consumersIds) {
         return queueManager.createQueue(queueId, producerId, consumersIds);
     }
