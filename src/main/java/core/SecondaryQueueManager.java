@@ -13,14 +13,14 @@ public class SecondaryQueueManager {
         this.pointer = primaryQueue.iterator();
     }
 
-    public List<DoubleMessage> dispatchToConsumer(int maxMessages) {
-        List<DoubleMessage> result = new ArrayList<>();
+    public List<Double> dispatchToConsumer(int maxMessages) {
+        List<Double> result = new ArrayList<>();
         int count = 0;
 
         while (pointer.hasNext() && count < maxMessages) {
             DoubleMessage doubleMessage = pointer.next();
             doubleMessage.accesses++;
-            result.add(doubleMessage);
+            result.addAll(doubleMessage.values);
             count++;
         }
 

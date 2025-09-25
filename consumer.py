@@ -37,6 +37,10 @@ def updateQueue():
         if size == 0:
             continue
         data = s.recv(size*8)
+        while len(data) != size*8:
+            data += s.recv(size*8 - len(data))
+        if len(data) != size*8:
+            print(f"Erro {size*8}, {len(data)}")
         data = struct.unpack(f">{size}d", data)
         que.put(data)
         print(f"{data[0]} queue size: ", que.qsize(), end="            \n")

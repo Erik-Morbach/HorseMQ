@@ -18,7 +18,7 @@ import java.util.Random;
 public class ConsumerReceive extends Operation {
     private final double messageDuration = 0.1;
     private final double sampleRate = 44100.0;
-    private final int bufferSize = (int)(messageDuration * sampleRate * 8);
+    private final int bufferSize = (int)(messageDuration * sampleRate) * 8;
     private ByteBuffer buffer = ByteBuffer.allocate(bufferSize);
 
     public ConsumerReceive(InputStream is, OutputStream os, InputExchanger inputExchanger, OutputExchanger outputExchanger) {
@@ -44,8 +44,8 @@ public class ConsumerReceive extends Operation {
         buffer.order(ByteOrder.BIG_ENDIAN);
         while (true) {
             int maxMessages = InputUtils.readInt(is);
-            List<DoubleMessage> batch = outputExchanger.sendMessage(maxMessages, consumerId, queueId);
-            int size = batch.stream().mapToInt(m -> m.values.size()).sum();
+            List<Double> batch = outputExchanger.sendMessage(maxMessages, consumerId, queueId);
+            int size = batch.size();
 
             intBuffer.putInt(0, size);
             os.write(intBuffer.array(), 0, 4);
@@ -54,11 +54,9 @@ public class ConsumerReceive extends Operation {
             if (size == 0) continue;
 
             int offset = 0;
-            for (DoubleMessage msg : batch) {
-                for (double d : msg.values) {
-                    buffer.putDouble(offset, d);
-                    offset += 8;
-                }
+            for (Double msg : batch) {
+                buffer.putDouble(offset, msg);
+                offset += 8;
             }
 
             os.write(buffer.array(), 0, size*8);

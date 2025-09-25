@@ -29,7 +29,7 @@ public class OutputExchanger {
         return secQueueManager != null;
     }
 
-    public List<DoubleMessage> sendMessage(int maxMessages, String consumerId, String queueId) {
+    public List<Double> sendMessage(int maxMessages, String consumerId, String queueId) {
         SecondaryQueueManager secQueueManager = secondaryQueueManagerMap.get(consumerId + queueId);
         if(secQueueManager == null) return new ArrayList<>();
         return secQueueManager.dispatchToConsumer(maxMessages);

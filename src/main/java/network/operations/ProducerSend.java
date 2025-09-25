@@ -16,7 +16,7 @@ import java.nio.ByteOrder;
 public class ProducerSend extends Operation {
     private final double messageDuration = 0.1;
     private final double sampleRate = 44100.0;
-    private final int bufferSize = (int)(messageDuration * sampleRate * 8);
+    private final int bufferSize = (int)(messageDuration * sampleRate) * 8;
     private ByteBuffer buffer = ByteBuffer.allocate(bufferSize);
     private long lastSendTime = System.currentTimeMillis();
     private long maxDiff = 0;
