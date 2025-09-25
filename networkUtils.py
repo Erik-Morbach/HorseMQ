@@ -32,17 +32,19 @@ def createConsumerId(consumerName):
     return consumerName, consumerId
 
 
-def createQueueId(allowedConsumers):
+def createQueueId(queueName, allowedConsumers):
     s = socket.socket()
     s.connect((str(SERVER_HOSTNAME), SERVER_PORT))
     data = bytearray()
     data.append(0b0010000)
+    data += queueName.encode("utf-8")
+    data += b"\0"
     data += (";".join(allowedConsumers)).encode('utf-8')
     data += b"\0"
     s.send(data)
-    queueId = s.recv(5)
+    created = s.recv(1)
     s.close()
-    return queueId
+    return created
 
 
 def connectConsumerToQueue(consumerId, queueId):

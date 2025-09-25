@@ -1,18 +1,18 @@
 import time
 import networkUtils as nu
 import struct
-import random
 import matplotlib
 import threading as th
 from queue import Queue
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
-from functools import partial
+from sys import argv
+
 matplotlib.use('macosx')
 
-consumerName = "Con1"
-queueId = "q1"
+consumerName = argv[1]
+queueId = argv[2]
 
 consumerId = nu.createConsumerId(consumerName)[1].decode("utf-8")
 
@@ -25,14 +25,14 @@ que = Queue()
 
 
 def updateQueue():
+    sleepSize = 0.1
     while 1:
-        time.sleep(0.02)
-        blockSize = int(0.02*44100)
+        time.sleep(sleepSize)
+        blockSize = int(sleepSize*10)
         data = struct.pack(">i", blockSize)
         s.send(data)
         size, = struct.unpack(">i", s.recv(4))
         if size == 0:
-            time.sleep(0.02)
             continue
         data = s.recv(size*8)
         data = struct.unpack(f">{size}d", data)
