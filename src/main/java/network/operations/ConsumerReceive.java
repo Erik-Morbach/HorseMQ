@@ -15,6 +15,9 @@ import java.util.Random;
 
 public class ConsumerReceive extends Operation {
     private ByteBuffer buffer = ByteBuffer.allocate(1024*8);
+    private final double messageDuration = 0.1;
+    private final double sampleRate = 44100.0;
+    private final int bufferSize = (int)(messageDuration * sampleRate * 8);
     private int bufferSeparation = 1024*8 - 100;
 
     public ConsumerReceive(InputStream is, OutputStream os, InputExchanger inputExchanger, OutputExchanger outputExchanger) {

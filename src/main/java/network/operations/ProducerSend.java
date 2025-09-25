@@ -1,5 +1,6 @@
 package network.operations;
 
+import core.DoubleMessage;
 import core.InputExchanger;
 import core.OutputExchanger;
 import network.InputUtils;
@@ -13,8 +14,12 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
 public class ProducerSend extends Operation {
-    private ByteBuffer buffer = ByteBuffer.allocate(1024*8);
+    private final double messageDuration = 0.1;
+    private final double sampleRate = 44100.0;
+    private final int bufferSize = (int)(messageDuration * sampleRate * 8);
+    private ByteBuffer buffer = ByteBuffer.allocate(bufferSize);
     private long lastSendTime = System.currentTimeMillis();
+    private long maxDiff = 0;
 
     public ProducerSend(InputStream is, OutputStream os, InputExchanger inputExchanger, OutputExchanger outputExchanger) {
         super(is, os, inputExchanger, outputExchanger);
@@ -22,6 +27,7 @@ public class ProducerSend extends Operation {
 
     @Override
     public void handle(byte headerByte) throws IOException {
+        maxDiff = 0;
         String producerId = InputUtils.readString(is).toString();
         String queueId = InputUtils.readString(is).toString();
 
@@ -33,16 +39,26 @@ public class ProducerSend extends Operation {
 
         buffer.order(ByteOrder.BIG_ENDIAN);
         int blockSize = 0;
-        long maxDiff = 0;
+
+        int bufferIndex = 0;
         while((blockSize = InputUtils.readInt(is)) > 0) {
-            long currentTime = System.currentTimeMillis();
-            maxDiff = Math.max(currentTime - lastSendTime, maxDiff);
-            System.out.printf("diff %d       \r",maxDiff);
-            lastSendTime = currentTime;
+            updateLatency();
             for(int i=0;i<blockSize;i++) {
-                buffer.putDouble(i*8, InputUtils.readDouble(is));
+                buffer.putDouble(bufferIndex*8, InputUtils.readDouble(is));
+                bufferIndex++;
+                if(bufferIndex*8 >= bufferSize) {
+                    inputExchanger.receiveMessage(queueId, producerId, DoubleMessage.from(buffer));
+                    bufferIndex = 0;
+                }
             }
         }
         System.out.println("Ending connection");
+    }
+
+    private void updateLatency(){
+        long currentTime = System.currentTimeMillis();
+        maxDiff = Math.max(currentTime - lastSendTime, maxDiff);
+        System.out.printf("diff %d       \r",maxDiff);
+        lastSendTime = currentTime;
     }
 }
