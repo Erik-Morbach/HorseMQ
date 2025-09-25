@@ -5,15 +5,18 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 
 public class Queue {
     private String producer;
     private Set<String> consumers;
     private LinkedList<DoubleMessage> messages = new LinkedList<>();
 
+
     public Queue(String producer, Set<String> consumers){
         this.producer = producer;
-        this.consumers = consumers;
+        this.consumers = consumers;;
     }
 
     public void enqueue(DoubleMessage msg) {
@@ -46,5 +49,9 @@ public class Queue {
 
     public Set<String> getConsumers(){
         return this.consumers;
+    }
+
+    public List<DoubleMessage> getMessages(){
+        return this.messages;
     }
 }
