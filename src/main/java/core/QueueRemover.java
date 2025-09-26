@@ -22,6 +22,7 @@ public class QueueRemover implements Runnable{
                     while (it.hasNext()) {
                         DoubleMessage message = it.next();
                         if (message.accesses == queue.getConsumers().size()) {
+                            System.out.println(message);
                             it.remove();
                         }
                         if (message.accesses == 0) break;
