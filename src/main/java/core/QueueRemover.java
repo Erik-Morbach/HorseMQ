@@ -2,11 +2,12 @@ package core;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 public class QueueRemover implements Runnable{
-    private List<Queue> queues;
+    private Map<String, Queue> queues;
 
-    public QueueRemover(List<Queue> queue){
+    public QueueRemover(Map<String, Queue> queue){
         this.queues = queue;
     }
 
@@ -17,12 +18,11 @@ public class QueueRemover implements Runnable{
                     Thread.sleep(1000);
                     continue;
                 }
-                queues.forEach(queue -> {
+                queues.forEach((name, queue) -> {
                     Iterator<DoubleMessage> it = queue.getMessages().iterator();
                     while (it.hasNext()) {
                         DoubleMessage message = it.next();
                         if (message.accesses == queue.getConsumers().size()) {
-                            System.out.println(message);
                             it.remove();
                         }
                         if (message.accesses == 0) break;

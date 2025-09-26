@@ -1,18 +1,19 @@
 package core;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 
 public class PrimaryQueueManager extends QueueManager {
-    private final Map<String, Queue> queues = new HashMap<>();
+    private final Map<String, Queue> queues = new ConcurrentHashMap<>();
     private final Set<String> consumers = new HashSet<>();
     private final Set<String> producers = new HashSet<>();
     private ThreadPoolExecutor threadPoolExecutor
             = (ThreadPoolExecutor) Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 
     public PrimaryQueueManager(){
-        threadPoolExecutor.execute(new QueueRemover(queues.values().stream().toList()));
+        threadPoolExecutor.execute(new QueueRemover(queues));
     }
 
     public boolean createQueue(String queueId, String producerId, Set<String> consumerIds){
